@@ -1,4 +1,5 @@
 import { createClient } from "@/utils/supabase/client";
+import sendWebHook from "@/utils/webhook";
 import { NextRequest, NextResponse } from "next/server";
 import { v4 } from "uuid";
 
@@ -11,7 +12,12 @@ export async function POST(req: NextRequest) {
       error: true,
     });
   }
-
+  await sendWebHook({
+    title: body.title,
+    author: body.author,
+    description: body.description,
+    link: body.link,
+  });
   const { error, data } = await supabase.from("posts").insert({
     id: v4(),
     title: body.title,
